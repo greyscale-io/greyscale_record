@@ -8,9 +8,9 @@ class AssociatableTest < Minitest::Test
   end
 
   def test_belongs_to_adds_index
-    refute_equal [:id], Size.__indices
+    refute_equal [:id], Size.send( :data ).send( :indices )
     Size.belongs_to :fake
-    assert_equal [:id, "fake_id"], Size.__indices.keys
+    assert_equal [:id, "fake_id"], Size.send( :data ).send( :indices ).keys
   end
 
   def test_has_one_adds_association

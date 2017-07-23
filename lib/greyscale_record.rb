@@ -16,7 +16,6 @@ module GreyscaleRecord
   autoload :Drivers,        'greyscale_record/drivers'
   autoload :Errors,         'greyscale_record/errors'
   autoload :Instanceable,   'greyscale_record/instanceable'
-  autoload :Index,          'greyscale_record/index'
   autoload :Indexable,      'greyscale_record/indexable'
   autoload :Propertiable,   'greyscale_record/propertiable'
   autoload :Queriable,      'greyscale_record/queriable'
