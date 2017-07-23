@@ -19,10 +19,6 @@ module GreyscaleRecord
             data[id]
           end
         end
-
-        def indexed?(field)
-          data.indexed? field
-        end
       end
     end
   end

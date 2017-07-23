@@ -62,7 +62,7 @@ module GreyscaleRecord
 
         def all_indexed?(fields)
           fields.all? do |field|
-            indexed = indexed? field
+            indexed = data.indexed? field
             unless indexed
               GreyscaleRecord.logger.warn "You are running a query on #{self}.#{field} which is not indexed. This will perform a table scan."
             end
