@@ -30,7 +30,8 @@ class GreyscaleRecordTest < Minitest::Test
 
   def test_class_will_error_without_a_yaml_file
     GreyscaleRecord.logger = TestLogger.new :puts
-    assert_output /GreyscaleRecord::Drivers::Yaml failed to load data for fakes: No such file or directory @ rb_sysopen - \/home\/greg\/src\/greyscale_record\/test\/db\/fixtures\/fakes.yml/ do
+    path = File.expand_path("./db/fixtures", File.dirname(__FILE__))
+    assert_output /GreyscaleRecord::Drivers::Yaml failed to load data for fakes: No such file or directory @ rb_sysopen - #{path}\/fakes.yml/ do
       Fake.load!
     end
   end
