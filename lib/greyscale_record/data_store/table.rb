@@ -20,10 +20,6 @@ module GreyscaleRecord
         @rows.values
       end
 
-      def first
-        @rows.values.first
-      end
-
       def add_index( column )
         @indices = @indices.merge( { column => Index.new(column, @rows) } )
       end
