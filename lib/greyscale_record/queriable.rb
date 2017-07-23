@@ -51,7 +51,7 @@ module GreyscaleRecord
         def find_by_indexed(params)
           sets = []
           params.each do |index, values|
-            sets << find_in_index(index, Array(values))
+            sets << data.find_in_index(index, Array(values))
           end
 
           # find the intersection of all the sets

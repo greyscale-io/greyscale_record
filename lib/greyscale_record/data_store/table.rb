@@ -30,9 +30,12 @@ module GreyscaleRecord
         @indices[column].present?
       end
 
-
-      def index_for(field)
-        @indices[field]
+      def find_in_index(column, values)
+        keys = Array(index_for(column).find(values))
+        
+        keys.map do |id|
+          @rows[id]
+        end
       end
 
       private
@@ -44,6 +47,10 @@ module GreyscaleRecord
         @rows.each do |k, v|
           v[:id] = k
         end
+      end
+
+      def index_for(column)
+        @indices[column]
       end
     end
   end

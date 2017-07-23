@@ -11,14 +11,6 @@ module GreyscaleRecord
           return if GreyscaleRecord.live_reload
           data.add_index( field )
         end
-
-        def find_in_index(field, values)
-          keys = Array(data.index_for(field).find(values))
-          
-          keys.map do |id|
-            data[id]
-          end
-        end
       end
     end
   end
