@@ -14,8 +14,6 @@ module GreyscaleRecord
 
       def load!
         data_store.add_table name
-
-        index :id unless GreyscaleRecord.live_reload
       end
 
       def inherited(subclass)
@@ -29,7 +27,7 @@ module GreyscaleRecord
       protected
 
       def data
-        data_store.read( table_name: name )
+        data_store.read( _table: name )
       end
     end
   end

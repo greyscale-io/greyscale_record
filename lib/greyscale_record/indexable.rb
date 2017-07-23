@@ -9,11 +9,11 @@ module GreyscaleRecord
       class << self
         def index(field)
           return if GreyscaleRecord.live_reload
-          self.__indices = __indices.merge( { field => Index.new(field, data) } )
+          data.add_index( field )
         end
 
         def find_in_index(field, values)
-          keys = Array(index_for(field).find(values))
+          keys = Array(data.index_for(field).find(values))
           
           keys.map do |id|
             data[id]
@@ -21,13 +21,7 @@ module GreyscaleRecord
         end
 
         def indexed?(field)
-          __indices[field].present?
-        end
-
-        protected 
-
-        def index_for(field)
-          __indices[field]
+          data.indexed? field
         end
       end
     end
