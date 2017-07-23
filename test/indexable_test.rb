@@ -4,7 +4,7 @@ class IndexableTest < Minitest::Test
   def setup 
     Person.load!
     Person.index(:name)
-    refute_empty Person.send( :data ).send( :indices )
+    refute_empty Person.send( :table ).send( :indices )
   end
 
   def teardown
@@ -13,8 +13,8 @@ class IndexableTest < Minitest::Test
 
   def test_can_add_index
     Person.index(:name)
-    refute_empty Person.send( :data ).send( :indices )
-    assert_equal [:id, :name], Person.send( :data ).send( :indices ).keys
+    refute_empty Person.send( :table ).send( :indices )
+    assert_equal [:id, :name], Person.send( :table ).send( :indices ).keys
   end
 
   def test_index_silinces_find_by_warnings

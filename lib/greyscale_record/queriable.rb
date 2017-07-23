@@ -5,7 +5,7 @@ module GreyscaleRecord
     included do
       class << self
         def find(id)
-          record = data[id]
+          record = table[id]
           raise Errors::RecordNotFound, "#{self}: Record not found: #{id}" unless record
           new record
         end
@@ -17,13 +17,13 @@ module GreyscaleRecord
         end
 
         def all
-          data.values.map do |obj|
+          table.values.map do |obj|
             new obj
           end
         end
 
         def first
-          new data.values.first
+          new table.values.first
         end
 
         # TODO: move this into scopes
@@ -41,7 +41,7 @@ module GreyscaleRecord
         private
 
         def find_by_scan(params)
-          data.values.select do |datum|
+          table.values.select do |datum|
             params.all? do |param, expected_value|
               val = Array(expected_value).include? datum[param]
             end
@@ -51,7 +51,7 @@ module GreyscaleRecord
         def find_by_indexed(params)
           sets = []
           params.each do |index, values|
-            sets << data.find_in_index(index, Array(values))
+            sets << table.find_in_index(index, Array(values))
           end
 
           # find the intersection of all the sets
@@ -62,7 +62,7 @@ module GreyscaleRecord
 
         def all_indexed?(fields)
           fields.all? do |field|
-            indexed = data.indexed? field
+            indexed = table.indexed? field
             unless indexed
               GreyscaleRecord.logger.warn "You are running a query on #{self}.#{field} which is not indexed. This will perform a table scan."
             end

@@ -26,7 +26,7 @@ module GreyscaleRecord
 
       protected
 
-      def data
+      def table
         data_store.read( _table: name )
       end
     end
