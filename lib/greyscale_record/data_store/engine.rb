@@ -48,8 +48,8 @@ module GreyscaleRecord
         load_table! name
       end
 
-      def add_index( table_name, column_name, options = {} )
-        store[table_name].add_index( column_name, options )
+      def add_index( table_name, column_name )
+        store[table_name].add_index( column_name )
       end
 
       private

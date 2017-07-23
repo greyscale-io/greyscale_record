@@ -5,9 +5,9 @@ module GreyscaleRecord
     included do
       class << self
         def find(id)
-          record = table[id]
-          raise Errors::RecordNotFound, "#{self}: Record not found: #{id}" unless record
-          new record
+          records = where(id: id.to_s)
+          raise Errors::RecordNotFound, "#{self}: Record not found: #{id}" if records.empty?
+          records.first
         end
 
         def find_by(params = {})
@@ -17,13 +17,13 @@ module GreyscaleRecord
         end
 
         def all
-          table.values.map do |obj|
+          table.all.map do |obj|
             new obj
           end
         end
 
         def first
-          new table.values.first
+          new table.first
         end
 
         # TODO: move this into scopes
