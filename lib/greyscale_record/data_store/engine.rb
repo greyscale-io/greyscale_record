@@ -35,7 +35,7 @@ module GreyscaleRecord
 
       # Read only store. No writes allowed. 
 
-      def read( options = {} )
+      def find( options = {} )
         if GreyscaleRecord.live_reload
           load_table!( name )
         end
@@ -60,10 +60,6 @@ module GreyscaleRecord
 
       def load_table!( name )
         store[name] = @driver.load!( name )
-      end
-
-      def patched?
-        !!Thread.current[:patched_data].present?
       end
     end
   end

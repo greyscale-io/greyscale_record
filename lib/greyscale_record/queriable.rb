@@ -28,45 +28,10 @@ module GreyscaleRecord
 
         # TODO: move this into scopes
         def where(params)
-          if all_indexed?(params.keys)
-            results = find_by_indexed(params)
-          else
-            results = find_by_scan(params)
-          end
+          results = table.find params 
+
           results.map do |result|
             new result
-          end
-        end
-
-        private
-
-        def find_by_scan(params)
-          table.values.select do |datum|
-            params.all? do |param, expected_value|
-              val = Array(expected_value).include? datum[param]
-            end
-          end
-        end
-
-        def find_by_indexed(params)
-          sets = []
-          params.each do |index, values|
-            sets << table.find_in_index(index, Array(values))
-          end
-
-          # find the intersection of all the sets
-          sets.inject( sets.first ) do |result, subset|
-            result & subset
-          end
-        end
-
-        def all_indexed?(fields)
-          fields.all? do |field|
-            indexed = table.indexed? field
-            unless indexed
-              GreyscaleRecord.logger.warn "You are running a query on #{self}.#{field} which is not indexed. This will perform a table scan."
-            end
-            indexed
           end
         end
       end

@@ -21,7 +21,7 @@ class QueriableTest < Minitest::Test
   def test_unindexed_find_by_warns
     logger = GreyscaleRecord.logger
     GreyscaleRecord.logger = TestLogger.new :print
-    assert_output "You are running a query on Person.url_slug which is not indexed. This will perform a table scan." do
+    assert_output "You are running a query on people.url_slug which is not indexed. This will perform a table scan." do
       assert Person.find_by( url_slug: "josh-dreher" )
     end
     GreyscaleRecord.logger = logger

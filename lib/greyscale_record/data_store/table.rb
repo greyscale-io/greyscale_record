@@ -4,7 +4,8 @@ module GreyscaleRecord
       attr_reader :rows
       delegate :each, :values, to: :rows
 
-      def initialize(rows)
+      def initialize(name, rows)
+        @name = name
         @rows = rows
 
         @indices = {}
@@ -22,8 +23,49 @@ module GreyscaleRecord
         @indices = @indices.merge( { column => Index.new(column, @rows) } )
       end
 
-      def read( params )
+      def find( params )
+        if all_indexed?(params.keys)
+          find_by_indexed(params)
+        else
+          find_by_scan(params)
+        end
+      end
 
+
+      private
+
+      attr_accessor :indices
+      
+      private
+
+      def find_by_scan(params)
+        values.select do |datum|
+          params.all? do |param, expected_value|
+            val = Array(expected_value).include? datum[param]
+          end
+        end
+      end
+
+      def find_by_indexed(params)
+        sets = []
+        params.each do |index, values|
+          sets << find_in_index(index, Array(values))
+        end
+
+        # find the intersection of all the sets
+        sets.inject( sets.first ) do |result, subset|
+          result & subset
+        end
+      end
+
+      def all_indexed?(fields)
+        fields.all? do |field|
+          indexed = indexed? field
+          unless indexed
+            GreyscaleRecord.logger.warn "You are running a query on #{@name}.#{field} which is not indexed. This will perform a table scan."
+          end
+          indexed
+        end
       end
 
       def indexed?(column)
@@ -37,10 +79,6 @@ module GreyscaleRecord
           @rows[id]
         end
       end
-
-      private
-
-      attr_accessor :indices
 
       def generate_ids!
         # init IDs
