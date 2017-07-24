@@ -10,6 +10,8 @@ yaml_driver = GreyscaleRecord::Drivers::Yaml.new File.expand_path("./db/fixtures
 GreyscaleRecord::Base.data_store = GreyscaleRecord::DataStore::Engine.new(yaml_driver)
 # GreyscaleRecord::PreviewLoader.driver = GreyscaleRecord::Drivers::Yaml.new File.expand_path("./db/diffs", File.dirname(__FILE__))
 
+GreyscaleRecord::DataStore::Table.send :attr_reader, :indices
+
 class TestLogger
   def initialize(action)
     @action = action

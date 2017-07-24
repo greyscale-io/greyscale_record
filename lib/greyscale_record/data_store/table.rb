@@ -41,10 +41,6 @@ module GreyscaleRecord
 
       private
 
-      attr_accessor :indices
-      
-      private
-
       def indexed?(column)
         @indices[column].present?
       end
