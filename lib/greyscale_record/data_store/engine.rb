@@ -35,7 +35,7 @@ module GreyscaleRecord
 
       # Read only store. No writes allowed. 
 
-      def read( options = {} )
+      def find( options = {} )
         if GreyscaleRecord.live_reload
           load_table!( name )
         end
@@ -48,8 +48,8 @@ module GreyscaleRecord
         load_table! name
       end
 
-      def add_index( table_name, column_name, options = {} )
-        store[table_name].add_index( column_name, options )
+      def add_index( table_name, column_name )
+        store[table_name].add_index( column_name )
       end
 
       private
@@ -60,10 +60,6 @@ module GreyscaleRecord
 
       def load_table!( name )
         store[name] = @driver.load!( name )
-      end
-
-      def patched?
-        !!Thread.current[:patched_data].present?
       end
     end
   end

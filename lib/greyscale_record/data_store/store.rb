@@ -16,7 +16,7 @@ module GreyscaleRecord
 
       def []=( table_name, data )
         @data[table_name] = data
-        @tables[table_name] = Table.new(data)
+        @tables[table_name] = Table.new(table_name, data)
       end
 
       def with_patch( patch )
@@ -30,11 +30,11 @@ module GreyscaleRecord
       # I don't think so? 
 
       def apply_patch( patch )
-        Tread.current[:patched_data] = patched_data patch
+        Thread.current[:patched_data] = patched_data patch
       end
 
       def remove_patch
-        Tread.current[:patched_data] = nil
+        Thread.current[:patched_data] = nil
       end
 
       private
@@ -45,6 +45,10 @@ module GreyscaleRecord
         end
 
         patch.apply @data
+      end
+
+      def patched?
+        !!Thread.current[:patched_data].present?
       end
     end
   end
