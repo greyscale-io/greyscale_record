@@ -3,6 +3,7 @@ require 'test_helper'
 class QueriableTest < Minitest::Test
   def test_can_find_by_id
     assert Person.find :josh
+    assert Person.find "josh"
   end
 
   def test_can_find_by_any_field
