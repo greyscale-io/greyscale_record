@@ -8,7 +8,7 @@ module GreyscaleRecord
 
       def []( table_name )
         unless @tables[table_name]
-          raise DataStoreError, "Data Store error: table '#{table_name}' does not exist"
+          raise GreyscaleRecord::Errors::DataStoreError, "Data Store error: table '#{table_name}' does not exist"
         end
 
         @tables[table_name]
@@ -41,7 +41,7 @@ module GreyscaleRecord
 
       def patched_data(patch)
         unless patch.respond_to? :apply
-          raise DataStoreError, "Data Store Error: apply_patch: patch must respond to 'apply(doc)'."
+          raise GreyscaleRecord::Errors::DataStoreError, "Data Store Error: apply_patch: patch must respond to 'apply(doc)'."
         end
 
         patch.apply @data

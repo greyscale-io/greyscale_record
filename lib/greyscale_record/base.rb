@@ -27,7 +27,7 @@ module GreyscaleRecord
       protected
 
       def table
-        data_store.find( _table: name )
+        data_store.table( name )
       end
     end
   end

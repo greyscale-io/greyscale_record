@@ -28,11 +28,14 @@ module GreyscaleRecord
 
         # TODO: move this into scopes
         def where(params)
-          results = table.find params 
+          # results = table.find params
+          # results = data_store.find params.merge _table: name
 
-          results.map do | result |
-            new result
-          end
+          # results.map do | result |
+          #   new result
+          # end
+
+          Scope.new self, params 
         end
       end
     end

@@ -36,12 +36,17 @@ module GreyscaleRecord
       # Read only store. No writes allowed. 
 
       def find( options = {} )
+        table = store[options.delete(:_table)]
         if GreyscaleRecord.live_reload
-          load_table!( name )
+          load_table!( table )
         end
 
         # TODO: this is where all the meat is
-        store[options[:_table]]
+        table.find options
+      end
+
+      def table( name )
+        store[name]
       end
 
       def add_table( name )
