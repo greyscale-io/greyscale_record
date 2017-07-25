@@ -24,7 +24,8 @@ module GreyscaleRecord
         @indices = @indices.merge( { column => Index.new(column, @rows) } )
       end
 
-      def find( params )
+      def find( params = {} )
+        return all if params.empty?
         sets = params.map do | column, values |
           if indexed? column
             find_in_index column, values

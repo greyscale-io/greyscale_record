@@ -19,7 +19,7 @@ module GreyscaleRecord
   autoload :Indexable,      'greyscale_record/indexable'
   autoload :Propertiable,   'greyscale_record/propertiable'
   autoload :Queriable,      'greyscale_record/queriable'
-  autoload :Scope,          'greyscale_record/scope'
+  autoload :Relation,       'greyscale_record/relation'
 
   class << self
     attr_accessor :live_reload

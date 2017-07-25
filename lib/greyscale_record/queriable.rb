@@ -17,9 +17,7 @@ module GreyscaleRecord
         end
 
         def all
-          table.all.map do | obj |
-            new obj
-          end
+          where
         end
 
         def first
@@ -27,7 +25,7 @@ module GreyscaleRecord
         end
 
         # TODO: move this into scopes
-        def where(params)
+        def where( params = {} )
           # results = table.find params
           # results = data_store.find params.merge _table: name
 
@@ -35,7 +33,7 @@ module GreyscaleRecord
           #   new result
           # end
 
-          Scope.new self, params 
+          Relation.new self, params 
         end
       end
     end

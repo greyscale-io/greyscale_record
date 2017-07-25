@@ -1,5 +1,5 @@
 module GreyscaleRecord
-  class Scope
+  class Relation
 
     delegate :present?, :empty?, :==, to: :all
 
