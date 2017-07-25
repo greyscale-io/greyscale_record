@@ -19,12 +19,6 @@ class QueriableTest < Minitest::Test
     assert_equal Person, Person.find_by( url_slug: "josh-dreher" ).class
   end
 
-  def test_chaining_wheres
-    assert_equal Person, Person.where( url_slug: "josh-dreher" ).and( id: "josh" ).first.class
-    assert_empty Person.where( id: "fake" ).and( name: "Fake" )
-    assert_equal "Josh Dreher", Person.where( id: "josh" ).where( url_slug: "josh-dreher", name: "Josh Dreher" ).first.name
-  end
-
   def test_unindexed_find_by_warns
     logger = GreyscaleRecord.logger
     GreyscaleRecord.logger = TestLogger.new :print
