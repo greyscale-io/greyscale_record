@@ -25,8 +25,7 @@ module GreyscaleRecord
       #
       # Yeah. OK.
 
-      attr_reader :store
-      delegate :apply_patch, :remove_patch, :with_patch, to: :store 
+      delegate :apply_patch, :remove_patch, :with_patch, :table, to: :store 
 
       def initialize( driver )
         @driver = driver
@@ -36,7 +35,7 @@ module GreyscaleRecord
       # Read only store. No writes allowed. 
 
       def find( options = {} )
-        table = store[options.delete(:_table)]
+        table = store.table( options.delete(:_table) )
         if GreyscaleRecord.live_reload
           load_table!( table )
         end
@@ -45,16 +44,12 @@ module GreyscaleRecord
         table.find options
       end
 
-      def table( name )
-        store[name]
-      end
-
       def add_table( name )
         load_table! name
       end
 
-      def add_index( table_name, column_name )
-        store[table_name].add_index( column_name )
+      def add_index( name, column )
+        store.table( name ).add_index( column )
       end
 
       private
@@ -64,7 +59,7 @@ module GreyscaleRecord
       end
 
       def load_table!( name )
-        store[name] = @driver.load!( name )
+        store.init_table name, @driver.load!( name )
       end
     end
   end
