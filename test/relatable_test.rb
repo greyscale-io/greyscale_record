@@ -5,6 +5,9 @@ class RelatableTest < Minitest::Test
     assert_equal Person, Person.where( url_slug: "josh-dreher" ).and( id: "josh" ).first.class
     assert_empty Person.where( id: "fake" ).and( name: "Fake" )
     assert_equal "Josh Dreher", Person.where( id: "josh" ).where( url_slug: "josh-dreher", name: "Josh Dreher" ).first.name
+
+    relation = Person.where( id: "josh" )
+    assert_equal "Josh Dreher", relation.where( url_slug: "josh-dreher" ).first.name
   end
 
   def test_associations_can_be_related
