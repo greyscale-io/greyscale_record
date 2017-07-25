@@ -8,7 +8,7 @@ module GreyscaleRecord
         # TODO: remove
         def index(field)
           return if GreyscaleRecord.live_reload
-          table.add_index( field )
+          data_store.add_index( name, field )
         end
       end
     end

@@ -23,12 +23,6 @@ module GreyscaleRecord
       def name
         self.to_s.pluralize.downcase
       end
-
-      protected
-
-      def table
-        data_store.table( name )
-      end
     end
   end
 end

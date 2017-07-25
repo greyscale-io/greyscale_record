@@ -8,9 +8,9 @@ class AssociatableTest < Minitest::Test
   end
 
   def test_belongs_to_adds_index
-    refute_equal [:id], Size.send( :table ).send( :indices )
+    refute_equal [:id], GreyscaleRecord::Base.data_store.table("sizes").send( :indices )
     Size.belongs_to :fake
-    assert_equal [:id, "fake_id"], Size.send( :table ).send( :indices ).keys
+    assert_equal [:id, "fake_id"], GreyscaleRecord::Base.data_store.table("sizes").send( :indices ).keys
   end
 
   def test_has_one_adds_association
