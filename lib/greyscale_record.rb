@@ -12,13 +12,14 @@ module GreyscaleRecord
   autoload :Associations,   'greyscale_record/associations'
   autoload :Base,           'greyscale_record/base'
   autoload :Cacheable,      'greyscale_record/cacheable'
+  autoload :DataStore,      'greyscale_record/data_store'
   autoload :Drivers,        'greyscale_record/drivers'
   autoload :Errors,         'greyscale_record/errors'
   autoload :Instanceable,   'greyscale_record/instanceable'
-  autoload :Index,          'greyscale_record/index'
   autoload :Indexable,      'greyscale_record/indexable'
   autoload :Propertiable,   'greyscale_record/propertiable'
   autoload :Queriable,      'greyscale_record/queriable'
+  autoload :Relation,       'greyscale_record/relation'
 
   class << self
     attr_accessor :live_reload

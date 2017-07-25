@@ -8,9 +8,9 @@ class AssociatableTest < Minitest::Test
   end
 
   def test_belongs_to_adds_index
-    refute_equal [:id], Size.__indices
+    refute_equal [:id], GreyscaleRecord::Base.data_store.table("sizes").send( :indices )
     Size.belongs_to :fake
-    assert_equal [:id, "fake_id"], Size.__indices.keys
+    assert_equal [:id, "fake_id"], GreyscaleRecord::Base.data_store.table("sizes").send( :indices ).keys
   end
 
   def test_has_one_adds_association
@@ -73,7 +73,7 @@ class AssociatableTest < Minitest::Test
 
   def test_valid_association_with_no_value_does_not_raise
     assert_equal nil, Person.find( :josh ).favorite_shoes
-    assert_equal [], Manufacturer.find( :boreal ).sizes
+    assert_empty Manufacturer.find( :boreal ).sizes
     assert_equal nil, Manufacturer.find( :boreal ).logo
     assert_equal nil, Logo.find( :mad_rock ).manufacturer
   end

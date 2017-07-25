@@ -11,5 +11,8 @@ module GreyscaleRecord
 
     class DriverError < StandardError
     end
+
+    class DataStoreError < StandardError
+    end
   end
 end

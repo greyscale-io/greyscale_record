@@ -2,29 +2,31 @@ module GreyscaleRecord
   module Drivers
     class Base
 
-      class_attribute :root
+      attr_reader :root
+
+      def initialize( root )
+        @root = root
+      end
       
-      class << self
-        def load!(class_name)
+      def load!(object)
 
-          raise GreyscaleRecord::DriverError "driver needs to define a `root`" unless root
-          
-          data = load_data(class_name)
-          
-          GreyscaleRecord.logger.info "#{class_name} successfully loaded data"
+        raise GreyscaleRecord::Errors::DriverError, "driver needs to define a `root`" unless root
+        
+        data = load_data(object)
+        
+        GreyscaleRecord.logger.info "#{object} successfully loaded data"
 
-          data
+        data
 
-        rescue => e
-          GreyscaleRecord.logger.error "#{self} failed to load data for #{class_name}: #{e}"
-          return nil
-        end
+      rescue => e
+        GreyscaleRecord.logger.error "#{self.class} failed to load data for #{object}: #{e}`"
+        {}
+      end
 
-        private 
+      private 
 
-        def load_data
-          raise NotImplementedError "load_data is not implemented"
-        end
+      def load_data
+        raise NotImplementedError, "load_data is not implemented"
       end
     end
   end

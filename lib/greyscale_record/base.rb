@@ -8,40 +8,20 @@ module GreyscaleRecord
     include Instanceable
     include Queriable
 
-    class_attribute :data
-    class_attribute :driver
+    class_attribute :data_store
 
     class << self
 
       def load!
-        @data = driver.load!(_class_name)
-        return unless @data
-        
-        # let's preemptively index by id so that when we do a find_by id:, or a where id: it won't table scan
-        idify_data!
-        
-        index :id unless GreyscaleRecord.live_reload
+        data_store.add_table name
       end
 
       def inherited(subclass)
         subclass.load!
       end
 
-      protected
-
-      def _class_name
-        self.name.pluralize.downcase
-      end
-
-      def idify_data!
-        @data.each do |k, v|
-          v[:id] = k
-        end
-      end
-
-      def data
-        load! if GreyscaleRecord.live_reload
-        @data
+      def name
+        self.to_s.pluralize.downcase
       end
     end
   end
