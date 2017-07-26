@@ -2,17 +2,14 @@ module GreyscaleRecord
   module Drivers
     class Yaml < Base
 
-      class << self
+      private 
 
-        private 
+      def load_data( object )
+        YAML.load_file( data_file( object ) ).with_indifferent_access
+      end
 
-        def load_data( class_name )
-          YAML.load_file( data_file( class_name ) ).with_indifferent_access
-        end
-
-        def data_file( class_name )
-          [root, "#{class_name}.yml"].compact.join("/")
-        end
+      def data_file( object )
+        [root, "#{object}.yml"].compact.join("/")
       end
     end
   end

@@ -2,19 +2,19 @@ require 'test_helper'
 
 class IndexableTest < Minitest::Test
   def setup 
-    Person.__indices = {}
+    Person.load!
     Person.index(:name)
-    refute_empty Person.__indices
+    refute_empty GreyscaleRecord::Base.data_store.table("people").send( :indices )
   end
 
   def teardown
-    Person.__indices = {}
+    Person.load!
   end
 
   def test_can_add_index
     Person.index(:name)
-    refute_empty Person.__indices
-    assert_equal [:name], Person.__indices.keys
+    refute_empty GreyscaleRecord::Base.data_store.table("people").send( :indices )
+    assert_equal [:id, :name], GreyscaleRecord::Base.data_store.table("people").send( :indices ).keys
   end
 
   def test_index_silinces_find_by_warnings
