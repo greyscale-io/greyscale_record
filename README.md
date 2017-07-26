@@ -1,6 +1,6 @@
 # Greyscale Record
 
-`GreyscaleRecord` is a simple read-only implementation of [YamlRecord](https://github.com/nicotaing/yaml_record). It's designed for users whose data is perfectly static and is stored in a flat file format (e.g. yaml files). It is a clone of [YamlBSides](https://github.com/gaorlov/yaml_b_sides), but is extended to support multiple backend drivers (YAML files, Greyscale API)
+`GreyscaleRecord` is a flat-file ORM, designed for users whose data is perfectly static and is stored in a flat format (e.g. yaml files). It is a clone of [YamlBSides](https://github.com/gaorlov/yaml_b_sides), but is extended to support multiple backend drivers (YAML files, JSON APIs)
 
 ## Installation
 
@@ -46,12 +46,6 @@ Note: `Greyscale Record` expects your class names to match the fixture names (e.
 
 Your `Person` class now responds to 
 
-### Query Methods
-
-* `all` : will give you all of the records in the table
-* `first` : wil return the first record in the table
-* `find( id )` : will find a single record with the specified yaml key
-* `find_by( properties = {} )` : will find all the recored that match all the proerties in the hash
 
 ### Indexing
 
@@ -152,6 +146,82 @@ Associations have some of the standard ActiveRecord options. Namely:
       thing_class: PArty
       #...
   ```
+
+### Query Methods
+
+* `all` : will give you all of the records in the table
+* `first` : wil return the first record in the table
+* `find( id )` : will find a single record with the specified yaml key
+* `find_by( properties = {} )` : will find all the recored that match all the proerties in the hash
+
+#### Relation methods
+
+These act as you would expect them to in ActiveRecord. These can be chained and applied to associations
+* `where( params )` : will return a relation which can be interacted with as if it were the resulting array
+* `and( params )` : identical to `where`, but nicer to read
+
+```ruby
+  Person.where( url_slug: "greg" ) #=> [<Person>]
+  Person.where( url_slug: "greg", name: "Greg Orlov" ).and( id: "greg") #=> [<Person>]
+  Person.where( url_slug: "greg", name: "Greg Orlov" ).where( id: "greg") #=> [<Person>]
+  # from the code above
+  Person.first.images.where( some_property: "value" )
+```
+
+### Data Sourcing
+
+As mentioned in the summary above, `GreyscaleRecord` can be connected to different data sources. The structure that we use is a `Driver`.
+There is a built in driver to use as an example: Yaml Driver. This is the structure that controls data flow from the original data store,
+such as YAML files or an API, and formats it to be consumed by the internal `GreyscaleRecord::DataStore::Store` object, which expects the
+result set to look roughly like 
+
+```
+{ table_name: {
+    record_id: { attribute: value, ... },
+    ...
+  },
+  ...
+}
+```
+
+`GreyscaleRecord` will populate the id field for you from the record keys.
+
+### Data Patching
+
+If you have a data set that you want to temporarily augment, you can apply a [JSON patch](http://jsonpatch.com/) to the data store.
+This will apply the patch within the context of your current thread until it is removed
+
+```ruby
+    patch = ::Hana::Patch.new [ { 'op' => 'add', 'path' => '/people/mike', 'value' => { id: "mike", name: "Mike Uchman" } } ]
+
+    # this will stick around indefinitely in this thread
+    data_store.apply_patch patch
+
+    Person.find( 'mike' ).name # => "Mike Uchman"
+    Person.where( id: 'mike' ).first.name #=> "Mike Uchman"
+
+    # let's go back to the original set
+    data_store.remove_patch
+
+    Person.where( id: "mike" ) #=> []
+```
+
+Or, if you are doing something simple and can fir your code in a single block, you can do:
+
+```ruby
+    data_store.with_patch patch do
+
+      Person.find( 'mike' ).name # => "Mike Uchman"
+      Person.where( id: 'mike' ).first.name #=> "Mike Uchman"
+
+    end
+
+    Person.where( id: "mike" ) #=> []
+```
+
+__NOTE__: The patch interface that `Store` expects is that of [Hana](https://github.com/tenderlove/hana). You don't have to use it, but it has
+to respond to `patch.apply( doc )`. 
+
 
 ### Example
 
