@@ -2,9 +2,9 @@ module GreyscaleRecord
   module DataStore
     class Table
 
-      def initialize(name, rows)
+      def initialize(name, store)
         @name = name
-        @rows = rows.with_indifferent_access
+        @store = store
 
         # initialize the index array for later use
         @indices = {}
@@ -17,17 +17,18 @@ module GreyscaleRecord
       end
 
       def all
-        @rows.values
+        rows.values
       end
 
       def add_index( column )
-        @indices = @indices.merge( { column => Index.new(column, @rows) } )
+        return if @store.patched?
+        @indices = @indices.merge( { column => Index.new(column, rows) } )
       end
 
       def find( params = {} )
         return all if params.empty?
         sets = params.map do | column, values |
-          if indexed? column
+          if !patched? && indexed?( column )
             find_in_index column, values
           else
             GreyscaleRecord.logger.warn "You are running a query on #{@name}.#{column} which is not indexed. This will perform a table scan."
@@ -42,12 +43,20 @@ module GreyscaleRecord
 
       private
 
+      def rows
+        @store[@name]
+      end
+
+      def patched?
+        @store.patched?
+      end
+
       def indexed?(column)
         @indices[column].present?
       end
 
       def find_in_column( column, values )
-        @rows.values.select do |datum|
+        rows.values.select do |datum|
           Array( values ).include? datum[ column ]
         end
       end
@@ -56,13 +65,13 @@ module GreyscaleRecord
         keys = @indices[column].find( Array( values ) )
         
         keys.map do |id|
-          @rows[id]
+          rows[id]
         end
       end
 
       def generate_ids!
         # init IDs
-        @rows.each do |k, v|
+        rows.each do |k, v|
           v[:id] = k
         end
       end

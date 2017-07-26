@@ -6,17 +6,21 @@ module GreyscaleRecord
         @tables = {}
       end
 
-      def []( table_name )
-        unless @tables[table_name]
-          raise GreyscaleRecord::Errors::DataStoreError, "Data Store error: table '#{table_name}' does not exist"
-        end
-
-        @tables[table_name]
+      def []( name )
+        data[ name ]
       end
 
-      def []=( table_name, data )
-        @data[table_name] = data
-        @tables[table_name] = Table.new(table_name, data)
+      def table( name )
+        unless @tables[name]
+          raise GreyscaleRecord::Errors::DataStoreError, "Data Store error: table '#{name}' does not exist"
+        end
+
+        @tables[name]
+      end
+
+      def init_table( name, rows )
+        @data[name] = rows
+        @tables[name] = Table.new( name, self )
       end
 
       def with_patch( patch )
@@ -30,13 +34,17 @@ module GreyscaleRecord
       # I don't think so? 
 
       def apply_patch( patch )
-        Thread.current[:patched_data] = patched_data patch
+        Thread.current[patch_key] = patched_data patch
       end
 
       def remove_patch
-        Thread.current[:patched_data] = nil
+        Thread.current[patch_key] = nil
       end
 
+      def patched?
+        Thread.current[patch_key].present?
+      end
+      
       private
 
       def patched_data(patch)
@@ -44,11 +52,20 @@ module GreyscaleRecord
           raise GreyscaleRecord::Errors::DataStoreError, "Data Store Error: apply_patch: patch must respond to 'apply(doc)'."
         end
 
-        patch.apply @data
+        patch.apply( @data.deep_dup )
       end
 
-      def patched?
-        !!Thread.current[:patched_data].present?
+      def patch_key
+        @key ||= "#{object_id}_patch"
+      end
+
+
+      def data
+        if patched?
+          Thread.current[patch_key]
+        else
+          @data
+        end
       end
     end
   end
