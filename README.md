@@ -268,8 +268,8 @@ The setup is pretty straightforward. Greyscale Record wants a logger and a base 
 ```ruby
 GreyscaleRecord::logger = Rails.logger
 # for now this is the only driver
-GreyscaleRecord::Base.driver = GreyscaleRecord::Drivers::Yaml
-GreyscaleRecord::Drivers::Yaml.root = Rails.root.join 'db', 'fixtures'
+yaml_driver = GreyscaleRecord::Drivers::Yaml.new File.expand_path("./db/fixtures", File.dirname(__FILE__))
+GreyscaleRecord::Base.data_store = GreyscaleRecord::DataStore::Engine.new(yaml_driver)
 
 
 # in development.rb

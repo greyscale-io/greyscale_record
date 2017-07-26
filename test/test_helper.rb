@@ -8,7 +8,6 @@ require 'greyscale_record'
 GreyscaleRecord.logger = Logger.new('/dev/null')
 yaml_driver = GreyscaleRecord::Drivers::Yaml.new File.expand_path("./db/fixtures", File.dirname(__FILE__))
 GreyscaleRecord::Base.data_store = GreyscaleRecord::DataStore::Engine.new(yaml_driver)
-# GreyscaleRecord::PreviewLoader.driver = GreyscaleRecord::Drivers::Yaml.new File.expand_path("./db/diffs", File.dirname(__FILE__))
 
 GreyscaleRecord::DataStore::Table.send :attr_reader, :indices
 
