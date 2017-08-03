@@ -17,7 +17,7 @@ module GreyscaleRecord
         end
 
         def all
-          where
+          where.all
         end
 
         def first
