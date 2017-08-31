@@ -37,7 +37,7 @@ module GreyscaleRecord
       def find( options = {} )
         table = store.table( options.delete(:_table) )
         if GreyscaleRecord.live_reload
-          load_table!( table )
+          load_table!( table.name )
         end
 
         # TODO: this is where all the meat is

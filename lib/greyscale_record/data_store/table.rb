@@ -1,6 +1,7 @@
 module GreyscaleRecord
   module DataStore
     class Table
+      attr_accessor :name
 
       def initialize(name, store)
         @name = name

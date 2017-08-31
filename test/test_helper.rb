@@ -11,6 +11,16 @@ GreyscaleRecord::Base.data_store = GreyscaleRecord::DataStore::Engine.new(yaml_d
 
 GreyscaleRecord::DataStore::Table.send :attr_reader, :indices
 
+module Urlable
+  extend ActiveSupport::Concern
+
+  included do
+    def url_for
+      object_id
+    end
+  end
+end
+
 class TestLogger
   def initialize(action)
     @action = action
@@ -23,6 +33,7 @@ class TestLogger
 end
 
 class Person < GreyscaleRecord::Base
+  include Urlable 
   property :not_in_yaml, :lol
   has_many :person_shoes
   has_one :favorite_shoes, through: :person_shoes, class_name: "Shoe"
@@ -48,6 +59,7 @@ class ManufacturerSize < GreyscaleRecord::Base
 end
 
 class Manufacturer < GreyscaleRecord::Base
+  index :name
   has_many :shoes
   has_one  :logo
   has_many :manufacturer_sizes
