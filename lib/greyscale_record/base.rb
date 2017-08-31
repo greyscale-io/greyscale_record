@@ -13,14 +13,14 @@ module GreyscaleRecord
     class << self
 
       def load!
-        data_store.add_table name
+        data_store.add_table table_name
       end
 
       def inherited(subclass)
         subclass.load!
       end
 
-      def name
+      def table_name
         self.to_s.pluralize.downcase
       end
     end

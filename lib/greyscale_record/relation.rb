@@ -5,7 +5,7 @@ module GreyscaleRecord
 
     def initialize( base, params )
       @base   = base
-      @params = params.dup.merge!( _table: @base.name )
+      @params = params.dup.merge!( _table: @base.table_name )
     end
 
     def where( params )
